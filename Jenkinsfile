@@ -23,11 +23,22 @@ pipeline {
         stage('Run Newman Tests') {
             steps {
                 bat '''
-                if not exist reports mkdir reports
+                echo WORKSPACE=%WORKSPACE%
+
+                if not exist "%WORKSPACE%\\reports" mkdir "%WORKSPACE%\\reports"
+
+                echo === BEFORE RUN ===
+                dir "%WORKSPACE%\\reports"
 
                 docker run --rm ^
-                -v %WORKSPACE%\\reports:/etc/newman/reports ^
-                %IMAGE_NAME%
+                -v "%WORKSPACE%\\reports:/etc/newman/reports" ^
+                postman/newman:alpine ^
+                run collections/API-Demo.postman_collection.json ^
+                -r cli,html ^
+                --reporter-html-export reports/report.html
+
+                echo === AFTER RUN ===
+                dir "%WORKSPACE%\\reports"
                 '''
             }
         }
@@ -35,8 +46,8 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
-            echo 'API test execution finished'
+            archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: false
+            echo 'API test execution completed'
         }
         success {
             echo 'API Tests PASSED ✅'
