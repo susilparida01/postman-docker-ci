@@ -24,6 +24,7 @@ pipeline {
             steps {
                 bat '''
                 if not exist reports mkdir reports
+
                 docker run --rm ^
                 -v %WORKSPACE%\\reports:/etc/newman/reports ^
                 %IMAGE_NAME%
@@ -34,7 +35,7 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: 'reports/*.html', fingerprint: true
+            archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
             echo 'API test execution finished'
         }
         success {
