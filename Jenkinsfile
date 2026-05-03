@@ -25,7 +25,7 @@ pipeline {
                 bat '''
                 if not exist reports mkdir reports
 
-                docker run ^
+                docker run --rm ^
                 -v %WORKSPACE%\\reports:/etc/newman/reports ^
                 %IMAGE_NAME%
                 '''
