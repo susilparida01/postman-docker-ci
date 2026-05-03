@@ -35,7 +35,7 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: false
+            archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
             echo 'API test execution finished'
         }
         success {
